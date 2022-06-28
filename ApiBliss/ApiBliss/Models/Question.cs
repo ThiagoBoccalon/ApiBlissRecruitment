@@ -15,5 +15,11 @@ public class Question
     [Required(ErrorMessage = "{0} requied")]
     [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}")]
     public DateTime PublishedAt { get; set; }
-    
+
+    public ICollection<Choice>? Choices { get; set; }
+
+    public Question()
+    {
+        Choices = new List<Choice>();
+    }
 }
