@@ -18,27 +18,43 @@ public class QuestionsController : Controller
     [HttpGet("{limit}/{offset}/{filter}")]
     public async Task<ActionResult<IEnumerable<Question>>> GetAsycn(int limit, int offset, string filter)
     {
-        var result = await _context.Questions.AsNoTracking().Include(question => question.Choices).
-                                                             Where(question => question.Ask.Contains(filter)).                                                             
+        try
+        {
+            var result = await _context.Questions.AsNoTracking().Include(question => question.Choices).
+                                                             Where(question => question.Ask.Contains(filter)).
                                                              Skip(0).Take(limit).ToListAsync();
 
-        if (result is null || result.Count == 0)
-            return NotFound("Questions don't find.");
+            if (result is null || result.Count == 0)
+                return NotFound("Questions don't find.");
 
-        return result;
+            return result;
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                           "I'm sorry. Have a problem to save your information.");
+        }
     }
 
     [HttpGet("{id}", Name="GetQuestion")]
     public async Task<ActionResult<IEnumerable<Question>>> GetAsycn(int id)
     {
-        var result = await _context.Questions.AsNoTracking().Include(question => question.Choices).
-                                                             Where(question => question.Id == id).                                                             
+        try
+        {
+            var result = await _context.Questions.AsNoTracking().Include(question => question.Choices).
+                                                             Where(question => question.Id == id).
                                                              ToListAsync();
 
-        if (result is null || result.Count == 0)
-            return NotFound("Questions don't find.");
+            if (result is null || result.Count == 0)
+                return NotFound("Question don't find.");
 
-        return result;
+            return result;
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                           "I'm sorry. Have a problem to save your information.");
+        }        
     }
 
     [HttpPost]
@@ -47,7 +63,7 @@ public class QuestionsController : Controller
         try
         {
             if (question is null)
-                return BadRequest("Dados inválidos");
+                return BadRequest("Data is invalidate.");
 
             _context.Questions.Add(question);
             _context.SaveChanges();
@@ -58,7 +74,7 @@ public class QuestionsController : Controller
         catch (Exception)
         {
             return StatusCode(StatusCodes.Status500InternalServerError,
-                      "Ocorreu um problema ao tratar a sua solicitação.");
+                      "I'm sorry. Have a problem to save your information.");
         }
     }
 }
