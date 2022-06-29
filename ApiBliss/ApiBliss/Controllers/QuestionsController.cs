@@ -50,7 +50,32 @@ public class QuestionsController : Controller
                                                             Skip(0).Take(limit).ToListAsync();
 
        
-        if (result is null)
+        if (result is null || result.Count == 0)
+            return NotFound("Questions don't find.");
+
+        return result;
+    }
+
+    [HttpGet("{id}")]
+    public async Task<ActionResult<IEnumerable<Question>>> GetAsycn(int id)
+    {
+        var result = await _context.Questions.AsNoTracking().Join(_context.Choices.AsNoTracking(),
+                                            question => question.Id,
+                                            choice => choice.QuestionId,
+                                            (question, choice) =>
+                                            new Question
+                                            {
+                                                Id = question.Id,
+                                                Ask = question.Ask,
+                                                ImageUrl = question.ImageUrl,
+                                                ThumbUrl = question.ThumbUrl,
+                                                PublishedAt = question.PublishedAt,
+                                                Choices = question.Choices
+                                            }).
+                                                            Where(question => question.Id == id).ToListAsync();
+
+
+        if (result is null || result.Count == 0)
             return NotFound("Questions don't find.");
 
         return result;
