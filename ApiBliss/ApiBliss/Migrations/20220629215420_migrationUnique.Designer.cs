@@ -11,14 +11,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiBliss.Migrations
 {
     [DbContext(typeof(ApiBlissContext))]
-    [Migration("20220628202203_MigrationInitial")]
-    partial class MigrationInitial
+    [Migration("20220629215420_migrationUnique")]
+    partial class migrationUnique
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.6")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ApiBliss.Models.Choice", b =>
@@ -29,7 +29,8 @@ namespace ApiBliss.Migrations
 
                     b.Property<string>("OptionOfChoice")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(140)
+                        .HasColumnType("varchar(140)");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");
@@ -52,17 +53,19 @@ namespace ApiBliss.Migrations
 
                     b.Property<string>("Ask")
                         .IsRequired()
-                        .HasMaxLength(140)
-                        .HasColumnType("varchar(140)");
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
 
                     b.Property<string>("ImageUrl")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<DateTime>("PublishedAt")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("ThumbUrl")
-                        .HasColumnType("longtext");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.HasKey("Id");
 
@@ -71,11 +74,13 @@ namespace ApiBliss.Migrations
 
             modelBuilder.Entity("ApiBliss.Models.Choice", b =>
                 {
-                    b.HasOne("ApiBliss.Models.Question", null)
+                    b.HasOne("ApiBliss.Models.Question", "Question")
                         .WithMany("Choices")
                         .HasForeignKey("QuestionId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Question");
                 });
 
             modelBuilder.Entity("ApiBliss.Models.Question", b =>

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace ApiBliss.Migrations
 {
-    public partial class MigrationInitial : Migration
+    public partial class migrationUnique : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -19,11 +19,11 @@ namespace ApiBliss.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Ask = table.Column<string>(type: "varchar(140)", maxLength: 140, nullable: false)
+                    Ask = table.Column<string>(type: "varchar(300)", maxLength: 300, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ImageUrl = table.Column<string>(type: "longtext", nullable: true)
+                    ImageUrl = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    ThumbUrl = table.Column<string>(type: "longtext", nullable: true)
+                    ThumbUrl = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PublishedAt = table.Column<DateTime>(type: "datetime(6)", nullable: false)
                 },
@@ -39,7 +39,7 @@ namespace ApiBliss.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    OptionOfChoice = table.Column<string>(type: "longtext", nullable: false)
+                    OptionOfChoice = table.Column<string>(type: "varchar(140)", maxLength: 140, nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Votes = table.Column<int>(type: "int", nullable: false),
                     QuestionId = table.Column<int>(type: "int", nullable: false)

@@ -2,23 +2,7 @@
 using ApiBliss.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
 namespace ApiBliss.Controllers;
-
-class Person
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-}
-
-class Pet
-{
-    public int Id { get; set; }
-    public string Name { get; set; }
-    public Person Owner { get; set; }
-    public int PersonId { get; set; }
-}
-
 
 [Route("[controller]")]
 [ApiController]
@@ -56,9 +40,10 @@ public class QuestionsController : Controller
         return result;
     }
 
-    [HttpGet("{id}")]
+    [HttpGet("{id}", Name="GetQuestion")]
     public async Task<ActionResult<IEnumerable<Question>>> GetAsycn(int id)
     {
+        
         var result = await _context.Questions.AsNoTracking().Join(_context.Choices.AsNoTracking(),
                                             question => question.Id,
                                             choice => choice.QuestionId,
@@ -72,12 +57,33 @@ public class QuestionsController : Controller
                                                 PublishedAt = question.PublishedAt,
                                                 Choices = question.Choices
                                             }).
-                                                            Where(question => question.Id == id).ToListAsync();
+                                                            Where(question => question.Id == id).ToListAsync(); 
 
 
         if (result is null || result.Count == 0)
             return NotFound("Questions don't find.");
 
         return result;
+    }
+
+    [HttpPost]
+    public ActionResult Post(Question question)
+    {
+        try
+        {
+            if (question is null)
+                return BadRequest("Dados inválidos");
+
+            _context.Questions.Add(question);
+            _context.SaveChanges();
+
+            return new CreatedAtRouteResult("ObterCategoria",
+                new { id = question.Id }, question);
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                      "Ocorreu um problema ao tratar a sua solicitação.");
+        }
     }
 }
