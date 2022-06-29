@@ -18,22 +18,10 @@ public class QuestionsController : Controller
     [HttpGet("{limit}/{offset}/{filter}")]
     public async Task<ActionResult<IEnumerable<Question>>> GetAsycn(int limit, int offset, string filter)
     {
-        var result = await _context.Questions.AsNoTracking().Join(_context.Choices.AsNoTracking(),
-                                            question => question.Id,
-                                            choice => choice.QuestionId,
-                                            (question, choice) => 
-                                            new Question {Id = question.Id, 
-                                                          Ask = question.Ask, 
-                                                          ImageUrl = question.ImageUrl,
-                                                          ThumbUrl = question.ThumbUrl,
-                                                          PublishedAt = question.PublishedAt,
-                                                          Choices = question.Choices}).
-                                                            Where(question => question.Ask.Contains(filter)).
-                                                            GroupBy(question => question.Id).
-                                                            Select(question => question.FirstOrDefault()).
-                                                            Skip(0).Take(limit).ToListAsync();
+        var result = await _context.Questions.AsNoTracking().Include(question => question.Choices).
+                                                             Where(question => question.Ask.Contains(filter)).                                                             
+                                                             Skip(0).Take(limit).ToListAsync();
 
-       
         if (result is null || result.Count == 0)
             return NotFound("Questions don't find.");
 
@@ -43,22 +31,9 @@ public class QuestionsController : Controller
     [HttpGet("{id}", Name="GetQuestion")]
     public async Task<ActionResult<IEnumerable<Question>>> GetAsycn(int id)
     {
-        
-        var result = await _context.Questions.AsNoTracking().Join(_context.Choices.AsNoTracking(),
-                                            question => question.Id,
-                                            choice => choice.QuestionId,
-                                            (question, choice) =>
-                                            new Question
-                                            {
-                                                Id = question.Id,
-                                                Ask = question.Ask,
-                                                ImageUrl = question.ImageUrl,
-                                                ThumbUrl = question.ThumbUrl,
-                                                PublishedAt = question.PublishedAt,
-                                                Choices = question.Choices
-                                            }).
-                                                            Where(question => question.Id == id).ToListAsync(); 
-
+        var result = await _context.Questions.AsNoTracking().Include(question => question.Choices).
+                                                             Where(question => question.Id == id).                                                             
+                                                             ToListAsync();
 
         if (result is null || result.Count == 0)
             return NotFound("Questions don't find.");
@@ -77,7 +52,7 @@ public class QuestionsController : Controller
             _context.Questions.Add(question);
             _context.SaveChanges();
 
-            return new CreatedAtRouteResult("ObterCategoria",
+            return new CreatedAtRouteResult("GetQuestion",
                 new { id = question.Id }, question);
         }
         catch (Exception)
