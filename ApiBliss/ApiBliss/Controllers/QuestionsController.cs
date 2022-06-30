@@ -36,7 +36,7 @@ public class QuestionsController : ControllerBase
         }
     }
 
-    [HttpGet("{id}", Name="GetQuestion")]
+    [HttpGet("{id:int:min(1)}", Name="GetQuestion")]
     public async Task<ActionResult<IEnumerable<Question>>> GetAsycn(int id)
     {
         try
@@ -78,7 +78,7 @@ public class QuestionsController : ControllerBase
         }
     }
 
-    [HttpPut("{id:int}")]
+    [HttpPut("{id:int:min(1)}")]
     public ActionResult Put(int id, Question question)
     {
         try

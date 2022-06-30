@@ -15,7 +15,7 @@ public class ChoicesController : ControllerBase
     {
         _context = context;
     }
-    [HttpPut("{idQuestion:int}")]
+    [HttpPut("{idQuestion:int:min(1)}")]
     public ActionResult Put(int idQuestion, Choice choice)
     {
         try
