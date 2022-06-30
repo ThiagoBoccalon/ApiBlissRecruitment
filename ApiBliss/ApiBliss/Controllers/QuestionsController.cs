@@ -77,4 +77,24 @@ public class QuestionsController : Controller
                       "I'm sorry. Have a problem to save your information.");
         }
     }
+
+    [HttpPut("{id:int}")]
+    public ActionResult Put(int id, Question question)
+    {
+        try
+        {
+            if (id != question.Id)
+                return BadRequest();
+
+            _context.Entry(question).State = EntityState.Modified;
+            _context.SaveChanges();
+
+            return Ok(question);
+        }
+        catch (Exception)
+        {
+            return StatusCode(StatusCodes.Status500InternalServerError,
+                      "I'm sorry. Have a problem to save your information.");
+        }        
+    }
 }
