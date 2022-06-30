@@ -7,7 +7,7 @@ namespace ApiBliss.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class ChoicesController : Controller
+public class ChoicesController : ControllerBase
 {
     private readonly ApiBlissContext _context;
 
@@ -29,7 +29,6 @@ public class ChoicesController : Controller
                 return NotFound($"Question with ID equal {idQuestion} not found");
 
             choice.QuestionId = idQuestion;
-
             _context.Choices.Add(choice);
             _context.SaveChanges();
 

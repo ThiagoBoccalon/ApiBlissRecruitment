@@ -1,6 +1,7 @@
 using ApiBliss.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json.Serialization;
+using ApiBliss.Service;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,8 @@ builder.Services.AddSwaggerGen();
 string mySqlConnection = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<ApiBlissContext>(options =>
                     options.UseMySql(mySqlConnection, ServerVersion.AutoDetect(mySqlConnection)));
+
+builder.Services.AddScoped<ISendMessageService, SendMenssageService>();
 
 var app = builder.Build();
 

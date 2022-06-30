@@ -6,7 +6,7 @@ namespace ApiBliss.Controllers;
 
 [Route("[controller]")]
 [ApiController]
-public class QuestionsController : Controller
+public class QuestionsController : ControllerBase
 {
     private readonly ApiBlissContext _context;
 
